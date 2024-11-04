@@ -10,4 +10,8 @@ export const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full',
   },
+  {
+    path: 'auth-action-complete',
+    loadComponent: () => import('./auth-action-complete/auth-action-complete.page').then( m => m.AuthActionCompletePage)
+  },
 ];
