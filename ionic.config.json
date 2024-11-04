@@ -1,0 +1,7 @@
+{
+  "name": "demo-ac6-salesforce",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
