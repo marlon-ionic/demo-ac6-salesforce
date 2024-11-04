@@ -56,6 +56,23 @@ export class VaultService {
     const isLocked = await this.vault.isLocked();
     this.vaulLockSubject.next({ isLocked });
   }
+  async clear() {
+    await this.vault.clear();
+  }
+
+  async lock() {
+    await this.vault.lock();
+  }
+  async unlock() {
+    await this.vault.unlock();
+  }
+  async set<T>(key: string, value: T) {
+    await this.vault.setValue(key, value);
+  }
+  async get<T>(key: string): Promise<T|null> {
+    return await this.vault.getValue(key);
+  }
+
 }
 
 export interface VaultLockState {
