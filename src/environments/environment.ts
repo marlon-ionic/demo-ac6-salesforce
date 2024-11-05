@@ -11,7 +11,7 @@ const providerOptions: ProviderOptions = {
   redirectUri: Capacitor.isNativePlatform() ? 'msauth:/auth-action-complete' : 'http://localhost:8100/auth-action-complete',
   discoveryUrl: 'https://outsystems8-dev-ed.develop.my.salesforce.com/.well-known/openid-configuration',
   scope: 'openid profile email offline_access',
-  logoutUrl: 'https://login.salesforce.com/services/oauth2/logout'
+  logoutUrl: Capacitor.isNativePlatform() ? 'msauth:/auth-action-complete' : 'http://localhost:8100/home'
 };
 
 export const environment = {

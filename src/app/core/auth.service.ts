@@ -4,12 +4,14 @@ import { SalesforceProvider } from './salesforce.provider';
 import { Capacitor } from '@capacitor/core';
 import { environment } from 'src/environments/environment';
 import { VaultService } from './vault.service';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 
 const authResultKey = 'authResult';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly authenticatedSubject = new BehaviorSubject<boolean>(false);
   private readonly vaultService = inject(VaultService);
   private readonly provider: AuthProvider;
   private readonly providerOptions = environment.providerOptions;
@@ -23,12 +25,16 @@ export class AuthService {
       platform: Capacitor.isNativePlatform() ? 'capacitor' : 'web',
       logLevel: 'DEBUG'
     });
+    this.authenticatedSubject.next(await this.isAuthenticated());
   }
 
   async login() {
+    console.log('login', this.providerOptions);
     const authResult = await AuthConnect.login(this.provider, this.providerOptions);
     this.saveAuthResult(authResult);
   }
+
+  isAuthenticated$ = this.authenticatedSubject.asObservable().pipe(distinctUntilChanged());
 
   async isAuthenticated(): Promise<boolean> {
     const authResult = await this.getAuthResult();
@@ -69,8 +75,10 @@ export class AuthService {
   }
 
   private async saveAuthResult(authResult: AuthResult | null): Promise<void> {
+    this.authenticatedSubject.next(!!authResult);
     if (authResult) {
       await this.vaultService.set(authResultKey, authResult);
+      this
     } else {
       await this.vaultService.clear();
     }
